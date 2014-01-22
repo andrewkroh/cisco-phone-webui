@@ -1,6 +1,7 @@
-*.class
-
-# Package Files #
-*.jar
-*.war
-*.ear
+*.sw*
+*~
+build/
+bin/
+node_modules/
+vendor/
+Thumbs.db

@@ -1,0 +1,106 @@
+<div class="page-header">
+<h2>Notifier</h2>
+</div>
+
+<div class="row">
+  <div class="col-md-8" ng-switch on="alertState">
+    <div class="alert alert-success" ng-switch-when="ACKNOWLEDGED">
+      <strong>Message acknowledged!</strong> From {{acknowledgeExtensionName}} 
+      at {{acknowledgeTime | date:'hh:mm:ss a'}}.
+    </div>
+    <div class="alert alert-info" ng-switch-when="SENT">
+      <strong>Notification sent!</strong> You will be updated when the message
+      is acknowledged. Or you may 
+      <a ng-click="cancel()" class="alert-link" style="cursor: pointer">cancel</a> 
+      the notification at any time.
+    </div>
+    <div class="alert alert-warning" ng-switch-when="TIMEDOUT">
+      <strong>Audible alert timed-out!</strong> Your message is still displayed
+      on the phones, but the audible alert has stopped. Would you like to  
+      <a ng-click="restart()" class="alert-link" style="cursor: pointer">restart</a> 
+      the alert for another 30 seconds? Or would you like to
+      <a ng-click="cancel()" class="alert-link" style="cursor: pointer">clear</a> 
+      the message from the phones?
+    </div>
+    <div class="alert alert-danger" ng-switch-when="IN_USE">
+      <strong>Sorry!</strong> Notifier is currently in use. However, you can
+      <a ng-click="cancel()" class="alert-link" style="cursor: pointer">cancel</a> 
+      the current notification.
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-8">
+    <form novalidate name="notifier_form" ng-submit="notify()" class="form-horizontal">
+      <fieldset ng-disabled="disabled">
+        <div class="form-group" 
+             ng-class="{'has-error': (notifier_form.message.$dirty && notifier_form.message.$invalid)}">
+          <label for="message" class="col-sm-2 control-label">Message</label>
+          <div class="col-sm-10">
+            <textarea class="form-control" rows="3" id="message" name="message"
+                      placeholder="Enter a message to send to the phones." 
+                      ng-model="message" 
+                      ng-minlength=2 ng-maxlength=120 required>
+            </textarea>
+            <p class="help-block error" 
+               ng-show="notifier_form.message.$dirty && notifier_form.message.$error.required">
+               Message is required.
+            </p>
+            <p class="help-block error" 
+               ng-show="notifier_form.message.$error.minlength">
+               Message must be at least 2 characters.
+            </p>
+            <p class="help-block error" 
+               ng-show="notifier_form.message.$error.maxlength">
+               Message must be 120 characters or less.
+            </p>
+          </div>
+        </div>
+        <div class="form-group"
+             ng-class="{'has-error': (notifier_form.extensions.$dirty && notifier_form.extensions.$invalid)}">
+          <label for="extensions" class="col-sm-2 control-label">Extensions</label>
+          <div class="col-sm-10">
+            <select multiple class="form-control" id="extensions" name="extensions"
+                    ng-model="extensions"
+                    ng-options="ext.name for ext in formOptions.extensions"
+                    required>
+            </select>
+            <p class="help-block error" 
+               ng-show="notifier_form.extensions.$dirty && 
+                        notifier_form.extensions.$error.required">
+               Extension is required.
+            </p>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="audibleAlert" class="col-sm-2 control-label">Alert</label>
+          <div class="col-sm-10">
+            <select class="form-control" id="audibleAlert" name="audibleAlert"
+                    ng-options="a.name for a in formOptions.audibleAlerts"
+                    ng-model="audibleAlert">
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="timeout" class="col-sm-2 control-label">Alert Timeout</label>
+          <div class="col-sm-10">
+            <select class="form-control" id="timeout" name="timeout"
+                    ng-options="t.name for t in formOptions.timeouts"
+                    ng-model="timeout">
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn"
+                    ng-disabled="notifier_form.$invalid" 
+                    ng-class="{'btn-primary': awaitingSubmit,
+                               'btn-success': success,
+                               'btn-danger':  error}">Notify</button>
+          </div>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,18 @@
+<div class="page-header">
+  <h2>Directory <small ng-bind="directory.title"></small></h2>
+</div>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Telephone</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="entry in directory.directoryEntries">
+      <td ng-bind="entry.name"></td>
+      <td ng-bind="entry.telephoneNumber"></td>
+    </tr>
+  </tbody>
+</table>
